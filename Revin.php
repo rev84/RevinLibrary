@@ -8,8 +8,11 @@ Class Revin{
 		
 		return $buf;
 	}
+
+
+	// tinyurlで短縮URLを取得
+	public static function GetTinyurl($url){
+		return file_get_contents('http://tinyurl.com/api-create.php?url='.$url);
+	}
 }
-
-
-
 ?>
