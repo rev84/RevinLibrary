@@ -1,7 +1,7 @@
 <?php
 
 Class Revin{
-	// ‰üs‚ð“ˆê
+	// æ”¹è¡Œã‚’çµ±ä¸€
 	public static function NormalizeLine($buf){
 		$buf = str_replace("\r\n", "\n", $buf);
 		$buf = str_replace("\r", "\n", $buf);
