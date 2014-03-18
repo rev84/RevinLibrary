@@ -6,7 +6,7 @@ Class Revin{
 		$buf = str_replace("\r\n", "\n", $buf);
 		$buf = str_replace("\r", "\n", $buf);
 		
-		return $buf
+		return $buf;
 	}
 }
 
