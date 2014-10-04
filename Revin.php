@@ -1,7 +1,15 @@
 <?php
 
 Class Revin{
-	// 改行を統一
+	/*************************************************************************
+	 *	改行を\nに統一
+	 *	
+	 *	[in]
+	 *	string	改行を統一したい文字列
+	 *	
+	 *	[out]
+	 *	string	改行が統一された文字列
+	 *************************************************************************/
 	public static function NormalizeLine($buf){
 		$buf = str_replace("\r\n", "\n", $buf);
 		$buf = str_replace("\r", "\n", $buf);
@@ -9,12 +17,29 @@ Class Revin{
 		return $buf;
 	}
 
-	// tinyurlで短縮URLを取得
+	/*************************************************************************
+	 *	Tinyurlで短縮されたURLを取得
+	 *	
+	 *	[in]
+	 *	string	URL
+	 *	
+	 *	[out]
+	 *	string	短縮されたURL
+	 *************************************************************************/
 	public static function GetTinyurl($url){
 		return file_get_contents('http://tinyurl.com/api-create.php?url='.$url);
 	}
 	
-	// var_dumpの内容をファイルに書きだす
+	/*************************************************************************
+	 *	var_dumpの内容をファイルに書き出し
+	 *	
+	 *	[in]
+	 *	mixed	var_dumpしたい変数
+	 *	string	保存したいファイルのパス（デフォルト：var_dump.txt）
+	 *	
+	 *	[out]
+	 *	boolean	true
+	 *************************************************************************/
 	public static function var_dump_file($var, $filename = './var_dump.txt'){
 		if(file_exists($filename)){
 			unlink($filename);
@@ -26,6 +51,48 @@ Class Revin{
 		file_put_contents($filename, $out, FILE_APPEND);
 
 		return true;
+	}
+	
+	/*************************************************************************
+	 *	与えられた配列の組み合わせを全パターン返す
+	 *	組み合わせ数が多いと死ぬ
+	 *	
+	 *	[in]
+	 *	array	組み合わせを列挙したい配列
+	 *	int		選ぶ数
+	 *	
+	 *	[out]
+	 *	mixed	組み合わせが1通り以上ある場合：組み合わせの全パターン
+	 *			組み合わせがない、入力が異常：false
+	 *************************************************************************/
+	public static function GetCombinationPattern($array, $r){
+		$getPatternFunc = function($array, $r, $all, $m) use(&$getPatternFunc){
+			if(count($m) == $r){
+				sort($m);
+				$all[implode("\t", $m)] = true;
+				return $all;
+			}
+			else{
+				for($i = 0; $i < count($array); $i++){
+					echo implode("\t", $m)."\n";
+					if(in_array($i, $m)) continue;
+					$temp = $m;
+					$temp[] = $i;
+					$all = $getPatternFunc($array, $r, $all, $temp);
+				}
+			}
+			
+			return $all;
+		};
+		
+		$allPattern = $getPatternFunc($array, $r, array(), array());
+		
+		$results = array();
+		foreach($allPattern as $key => $val){
+			$results[] = explode("\t", $key);
+		}
+		
+		return $results;
 	}
 }
 ?>
