@@ -65,28 +65,26 @@ Class Revin{
 	 *	array	パーミテーションの全パターン
 	 *************************************************************************/
 	public static function GetPermutationPattern($array, $r){
-		$getPatternFunc = function($array, $r, $all, $m) use(&$getPatternFunc){
+		$all = array();
+		
+		$getPatternFunc = function($m) use($array, $r, &$getPatternFunc, &$all){
 			if(count($m) == $r){
 				$all[implode("\t", $m)] = true;
-				return $all;
 			}
 			else{
 				for($i = 0; $i < count($array); $i++){
-					echo implode("\t", $m)."\n";
 					if(in_array($i, $m)) continue;
 					$temp = $m;
 					$temp[] = $i;
-					$all = $getPatternFunc($array, $r, $all, $temp);
+					$getPatternFunc($temp);
 				}
 			}
-			
-			return $all;
 		};
 		
-		$allPattern = $getPatternFunc($array, $r, array(), array());
+		$getPatternFunc(array());
 		
 		$results = array();
-		foreach($allPattern as $key => $val){
+		foreach($all as $key => $val){
 			$results[] = explode("\t", $key);
 		}
 		
@@ -105,29 +103,27 @@ Class Revin{
 	 *	mixed	コンビネーションの全パターン
 	 *************************************************************************/
 	public static function GetCombinationPattern($array, $r){
-		$getPatternFunc = function($array, $r, $all, $m) use(&$getPatternFunc){
+		$all = array();
+		
+		$getPatternFunc = function($m) use($array, $r, &$getPatternFunc, &$all){
 			if(count($m) == $r){
 				sort($m);
 				$all[implode("\t", $m)] = true;
-				return $all;
 			}
 			else{
 				for($i = 0; $i < count($array); $i++){
-					echo implode("\t", $m)."\n";
 					if(in_array($i, $m)) continue;
 					$temp = $m;
 					$temp[] = $i;
-					$all = $getPatternFunc($array, $r, $all, $temp);
+					$getPatternFunc($temp);
 				}
 			}
-			
-			return $all;
 		};
 		
-		$allPattern = $getPatternFunc($array, $r, array(), array());
+		$getPatternFunc(array());
 		
 		$results = array();
-		foreach($allPattern as $key => $val){
+		foreach($all as $key => $val){
 			$results[] = explode("\t", $key);
 		}
 		
