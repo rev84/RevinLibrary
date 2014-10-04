@@ -54,7 +54,7 @@ Class Revin{
 	}
 	
 	/*************************************************************************
-	 *	与えられた配列の組み合わせを全パターン返す
+	 *	与えられた配列のパーミテーションを全パターン返す
 	 *	組み合わせ数が多いと死ぬ
 	 *	
 	 *	[in]
@@ -62,8 +62,47 @@ Class Revin{
 	 *	int		選ぶ数
 	 *	
 	 *	[out]
-	 *	mixed	組み合わせが1通り以上ある場合：組み合わせの全パターン
-	 *			組み合わせがない、入力が異常：false
+	 *	array	パーミテーションの全パターン
+	 *************************************************************************/
+	public static function GetPermutationPattern($array, $r){
+		$getPatternFunc = function($array, $r, $all, $m) use(&$getPatternFunc){
+			if(count($m) == $r){
+				$all[implode("\t", $m)] = true;
+				return $all;
+			}
+			else{
+				for($i = 0; $i < count($array); $i++){
+					echo implode("\t", $m)."\n";
+					if(in_array($i, $m)) continue;
+					$temp = $m;
+					$temp[] = $i;
+					$all = $getPatternFunc($array, $r, $all, $temp);
+				}
+			}
+			
+			return $all;
+		};
+		
+		$allPattern = $getPatternFunc($array, $r, array(), array());
+		
+		$results = array();
+		foreach($allPattern as $key => $val){
+			$results[] = explode("\t", $key);
+		}
+		
+		return $results;
+	}
+
+	/*************************************************************************
+	 *	与えられた配列のコンビネーションを全パターン返す
+	 *	組み合わせ数が多いと死ぬ
+	 *	
+	 *	[in]
+	 *	array	組み合わせを列挙したい配列
+	 *	int		選ぶ数
+	 *	
+	 *	[out]
+	 *	mixed	コンビネーションの全パターン
 	 *************************************************************************/
 	public static function GetCombinationPattern($array, $r){
 		$getPatternFunc = function($array, $r, $all, $m) use(&$getPatternFunc){
