@@ -129,5 +129,31 @@ Class Revin{
 		
 		return $results;
 	}
+	
+	/*************************************************************************
+	 *	特定ディレクトリ内のファイルの一覧を取得
+	 *	. と .. は無視する
+	 *	
+	 *	[in]
+	 *	dir			ディレクトリ名
+	 *	isDirOnly	trueならディレクトリのみを取る。falseならファイルのみを取る
+	 *	
+	 *	[out]
+	 *	mixed	コンビネーションの全パターン
+	 *************************************************************************/
+	public static function GetListInDir($dir, $isDirOnly = false){
+		if($handle = opendir($dir)){
+			$files = array();
+			while(false !== ($entry = readdir($handle))){
+				if(($entry != '.' && $entry != '..') && (is_dir($entry) xor !$isDirOnly)){
+					$files[] = $entry;
+				}
+			}
+			
+			return $files;
+		}
+		
+		return false;
+    }
 }
 ?>
