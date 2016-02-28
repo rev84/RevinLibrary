@@ -21,7 +21,7 @@ Test = (function() {
   };
 
   Test.addressBar = function(before) {
-    return [before, '<button onclick="Utility.addressBar(' + before + ')">変更</button>' + '<button onclick="Utility.addressBar(\'./\')">戻す</button>'];
+    return [before, '<button onclick="Utility.addressBar(\'' + before + '\')">変更</button>' + '<button onclick="Utility.addressBar(\'./\')">戻す</button>'];
   };
 
   return Test;

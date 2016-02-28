@@ -11,7 +11,7 @@ class Test
       after.push(Utility.rand min, max)
     ['min:'+min+', max:'+max, after.join(', ')]
   @addressBar:(before)->
-    [before, '<button onclick="Utility.addressBar('+before+')">変更</button>'+'<button onclick="Utility.addressBar(\'./\')">戻す</button>']
+    [before, '<button onclick="Utility.addressBar(\''+before+'\')">変更</button>'+'<button onclick="Utility.addressBar(\'./\')">戻す</button>']
 
 $().ready ->
   for funcName, cases of window.tests
