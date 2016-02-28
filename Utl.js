@@ -33,18 +33,30 @@ Utl = (function() {
     return num;
   };
 
-  Utl.time = function() {
-    return Math.floor(+new Date() / 1000);
+  Utl.time = function(date) {
+    if (date == null) {
+      date = null;
+    }
+    if (date === null) {
+      date = new Date();
+    }
+    return Math.floor(+date / 1000);
   };
 
-  Utl.militime = function(getAsFloat) {
+  Utl.militime = function(date, getAsFloat) {
+    if (date == null) {
+      date = null;
+    }
     if (getAsFloat == null) {
       getAsFloat = false;
     }
-    return +new Date() / (getAsFloat ? 1000 : 1);
+    if (date === null) {
+      date = new Date();
+    }
+    return +date / (getAsFloat ? 1000 : 1);
   };
 
-  Utl.getDateStr = function(date, dateSep) {
+  Utl.dateStr = function(date, dateSep) {
     if (date == null) {
       date = null;
     }
@@ -57,7 +69,7 @@ Utl = (function() {
     return '' + this.zerofill(date.getFullYear(), 4) + dateSep + this.zerofill(date.getMonth() + 1, 2) + dateSep + this.zerofill(date.getDate(), 2);
   };
 
-  Utl.getDatetimeStr = function(date, dateSep, timeSep, betweenSep) {
+  Utl.datetimeStr = function(date, dateSep, timeSep, betweenSep) {
     if (date == null) {
       date = null;
     }
@@ -73,7 +85,81 @@ Utl = (function() {
     if (date === null) {
       date = new Date();
     }
-    return this.getDateStr(date, dateSep) + betweenSep + this.zerofill(date.getHours(), 2) + timeSep + this.zerofill(date.getMinutes(), 2) + timeSep + this.zerofill(date.getSeconds(), 2);
+    return this.dateStr(date, dateSep) + betweenSep + this.zerofill(date.getHours(), 2) + timeSep + this.zerofill(date.getMinutes(), 2) + timeSep + this.zerofill(date.getSeconds(), 2);
+  };
+
+  Utl.difftime = function(targetDate, baseDate, nowSec, nowStr, agoStr, secStr, minStr, hourStr, dayStr, monStr, yearStr) {
+    var baseTime, d, diffTime, h, m, mo, targetTime, y;
+    if (baseDate == null) {
+      baseDate = null;
+    }
+    if (nowSec == null) {
+      nowSec = 0;
+    }
+    if (nowStr == null) {
+      nowStr = 'ついさっき';
+    }
+    if (agoStr == null) {
+      agoStr = '前';
+    }
+    if (secStr == null) {
+      secStr = '秒';
+    }
+    if (minStr == null) {
+      minStr = '分';
+    }
+    if (hourStr == null) {
+      hourStr = '時間';
+    }
+    if (dayStr == null) {
+      dayStr = '日';
+    }
+    if (monStr == null) {
+      monStr = '月';
+    }
+    if (yearStr == null) {
+      yearStr = '年';
+    }
+    if (baseDate === null) {
+      baseTime = this.time();
+    }
+    targetTime = this.time(targetDate);
+    diffTime = baseTime - targetTime;
+    if (diffTime < 0) {
+      return null;
+    }
+    if (nowSec >= diffTime) {
+      return nowStr;
+    }
+    y = Math.floor(diffTime / (60 * 60 * 24 * 30 * 12));
+    if (y > 0) {
+      return '' + y + yearStr + agoStr;
+    }
+    diffTime -= y * (60 * 60 * 24 * 30 * 12);
+    mo = Math.floor(diffTime / (60 * 60 * 24 * 30));
+    if (mo > 0) {
+      return '' + mo + monStr + agoStr;
+    }
+    diffTime -= mo * (60 * 60 * 24 * 30);
+    d = Math.floor(diffTime / (60 * 60 * 24));
+    if (d > 0) {
+      return '' + d + dayStr + agoStr;
+    }
+    diffTime -= d * (60 * 60 * 24);
+    h = Math.floor(diffTime / (60 * 60));
+    if (h > 0) {
+      return '' + h + hourStr + agoStr;
+    }
+    diffTime -= h * (60 * 60);
+    m = Math.floor(diffTime / 60);
+    if (m > 0) {
+      return '' + m + minStr + agoStr;
+    }
+    diffTime -= m * 60;
+    if (diffTime > 0) {
+      return '' + diffTime + secStr + agoStr;
+    }
+    return nowStr;
   };
 
   Utl.zerofill = function(num, digit) {

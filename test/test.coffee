@@ -2,15 +2,15 @@ window.tests =
   numFormat : [1000, 500, 1234567890, -123456789]
   rand : [[1,10], [1, 100], [5, 30], [-5, 5]]
   adrBar : ['/=====', 'yeah', 'test.js']
-  getDateStr:[
-    ['null', null]
-    ['new Date(0)', new Date(0)]
-    ['new Date(1000000000000)', new Date(1000000000000), '/']
+  dateStr:[
+    [null]
+    [new Date(0)]
+    [new Date(1000000000000), '/']
   ]
-  getDatetimeStr:[
-    ['null', null]
-    ['new Date(0)', new Date(0), '/']
-    ['new Date(1000000000000)', new Date(1000000000000), '', '', '']
+  datetimeStr:[
+    [null]
+    [new Date(0), '/']
+    [new Date(1000000000000), '', '', '']
   ]
   normalize:[
     [0.3]
@@ -25,10 +25,29 @@ window.tests =
     [100, 10]
   ]
   time:[
-    null
+    undefined
+    new Date()
+    new Date(1000000000000)
   ]
   militime:[
-    null
+    ['undefined', undefined]
+    ['new Date()', new Date()]
+    ['new Date(1000000000000)', new Date(1000000000000)]
+    ['new Date()', new Date(), true]
+    ['new Date()', new Date(), false]
+  ]
+  difftime:[
+    [new Date()]
+    [new Date(1000000000000)]
+    [new Date(1000000000000), new Date(Utl.militime()-10)]
+    [new Date(Utl.militime()-10), undefined, 60]
+    [new Date(Utl.militime()-10), undefined, 60, '直前']
+    [new Date(Utl.militime()-10), undefined, undefined, undefined, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr']
+    [new Date(Utl.militime()-(1000*(60+10))), undefined, undefined, undefined, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr']
+    [new Date(Utl.militime()-(1000*(60*60+10))), undefined, undefined, undefined, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr']
+    [new Date(Utl.militime()-(1000*(60*60*24+10))), undefined, undefined, undefined, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr']
+    [new Date(Utl.militime()-(1000*(60*60*24*30+10))), undefined, undefined, undefined, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr']
+    [new Date(Utl.militime()-(1000*(60*60*24*30*12+10))), undefined, undefined, undefined, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr']
   ]
   inArray : [
     [1, [1,2,3,4,5]]
@@ -80,12 +99,37 @@ class UtlTest
     [str, times] = before
     ['str = '+str+'<br>times = '+times, Utl.repeat(str, times)]
 
-  @getDateStr:(before)->
-    [beforeStr, before, dateSep] = before
-    ['date = '+beforeStr+'<br>'+'dateSep = '+dateSep, Utl.getDateStr(before, dateSep)]
-  @getDatetimeStr:(before)->
-    [beforeStr, before, dateSep, timeSep, betweenSep] = before
-    ['date = '+beforeStr+'<br>'+'dateSep = '+dateSep+'<br>timeSep = '+timeSep+'<br>betweenSep = '+betweenSep, Utl.getDatetimeStr(before, dateSep, timeSep, betweenSep)]
+  @time:(before)->
+    beforeStr = if before? then 'new Date('+Math.floor(Utl.militime(before, true))+')' else 'undefined'  
+    ['date = '+beforeStr, Utl.time(before)]
+  @militime:(before)->
+    [dateStr, date, getAsFloat] = before
+    ['date = '+dateStr+'<br>'+'getAsFloat = '+getAsFloat, Utl.militime(date, getAsFloat)]
+  @dateStr:(before)->
+    [before, dateSep] = before
+    beforeStr = if before? then 'new Date('+Utl.militime(before)+')' else 'undefined'  
+    ['date = '+beforeStr+'<br>'+'dateSep = '+dateSep, Utl.dateStr(before, dateSep)]
+  @datetimeStr:(before)->
+    [before, dateSep, timeSep, betweenSep] = before
+    beforeStr = if before? then 'new Date('+Utl.militime(before)+')' else 'undefined'  
+    ['date = '+beforeStr+'<br>'+'dateSep = '+dateSep+'<br>timeSep = '+timeSep+'<br>betweenSep = '+betweenSep, Utl.datetimeStr(before, dateSep, timeSep, betweenSep)]
+  @difftime:(before)->
+    [targetDate, baseDate, nowSec, nowStr, agoStr, secStr, minStr, hourStr, dayStr, monStr, yearStr] = before
+    targetDateStr = if targetDate? then 'new Date('+Utl.militime(targetDate)+')' else 'undefined'
+    baseDateStr = if baseDate? then 'new Date('+Utl.militime(baseDate)+')' else 'undefined'
+    beforeStr = """targetDate = #{targetDateStr}
+                   baseDate   = #{baseDateStr}
+                   nowSec     = #{nowSec}
+                   nowStr     = #{nowStr}
+                   agoStr     = #{agoStr}
+                   secStr     = #{secStr}
+                   minStr     = #{minStr}
+                   hourStr    = #{hourStr}
+                   dayStr     = #{dayStr}
+                   monStr     = #{monStr}
+                   yearStr    = #{yearStr}
+                """.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>')
+    [beforeStr, Utl.difftime(targetDate, baseDate, nowSec, nowStr, agoStr, secStr, minStr, hourStr, dayStr, monStr, yearStr)]
 
   @inArray:(ary)->
     [needle, array] = ary

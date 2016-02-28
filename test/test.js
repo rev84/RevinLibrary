@@ -5,12 +5,13 @@ window.tests = {
   numFormat: [1000, 500, 1234567890, -123456789],
   rand: [[1, 10], [1, 100], [5, 30], [-5, 5]],
   adrBar: ['/=====', 'yeah', 'test.js'],
-  getDateStr: [['null', null], ['new Date(0)', new Date(0)], ['new Date(1000000000000)', new Date(1000000000000), '/']],
-  getDatetimeStr: [['null', null], ['new Date(0)', new Date(0), '/'], ['new Date(1000000000000)', new Date(1000000000000), '', '', '']],
+  dateStr: [[null], [new Date(0)], [new Date(1000000000000), '/']],
+  datetimeStr: [[null], [new Date(0), '/'], [new Date(1000000000000), '', '', '']],
   normalize: [[0.3], [6.2], [Math.sin(Math.PI), -Math.PI, Math.PI], [-Math.random(), Math.random() / 2, 0.5 + Math.random() / 2], [3489, 0, 100]],
   zerofill: [[1, 5], [100, 4], [100, 10]],
-  time: [null],
-  militime: [null],
+  time: [void 0, new Date(), new Date(1000000000000)],
+  militime: [['undefined', void 0], ['new Date()', new Date()], ['new Date(1000000000000)', new Date(1000000000000)], ['new Date()', new Date(), true], ['new Date()', new Date(), false]],
+  difftime: [[new Date()], [new Date(1000000000000)], [new Date(1000000000000), new Date(Utl.militime() - 10)], [new Date(Utl.militime() - 10), void 0, 60], [new Date(Utl.militime() - 10), void 0, 60, '直前'], [new Date(Utl.militime() - 10), void 0, void 0, void 0, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr'], [new Date(Utl.militime() - (1000 * (60 + 10))), void 0, void 0, void 0, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr'], [new Date(Utl.militime() - (1000 * (60 * 60 + 10))), void 0, void 0, void 0, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr'], [new Date(Utl.militime() - (1000 * (60 * 60 * 24 + 10))), void 0, void 0, void 0, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr'], [new Date(Utl.militime() - (1000 * (60 * 60 * 24 * 30 + 10))), void 0, void 0, void 0, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr'], [new Date(Utl.militime() - (1000 * (60 * 60 * 24 * 30 * 12 + 10))), void 0, void 0, void 0, ' ago', 's', 'm', 'h', 'd', 'mo', 'yr']],
   inArray: [[1, [1, 2, 3, 4, 5]], ['a', [1, 2, 3, 4, 5, 'a']], ['b', [1, 2, 3, 4, 5, 'a']], [1, []], [null, [0, 1, 2, 3]]],
   clone: [[1, 2, 3, 4, 5]],
   shuffle: [[1, 2, 3, 4, 5], ['a', 'b', 'c', 'd', 'e'], [1, 1, 1, 2, 3]],
@@ -68,16 +69,39 @@ UtlTest = (function() {
     return ['str = ' + str + '<br>times = ' + times, Utl.repeat(str, times)];
   };
 
-  UtlTest.getDateStr = function(before) {
-    var beforeStr, dateSep, ref;
-    ref = before, beforeStr = ref[0], before = ref[1], dateSep = ref[2];
-    return ['date = ' + beforeStr + '<br>' + 'dateSep = ' + dateSep, Utl.getDateStr(before, dateSep)];
+  UtlTest.time = function(before) {
+    var beforeStr;
+    beforeStr = before != null ? 'new Date(' + Math.floor(Utl.militime(before, true)) + ')' : 'undefined';
+    return ['date = ' + beforeStr, Utl.time(before)];
   };
 
-  UtlTest.getDatetimeStr = function(before) {
+  UtlTest.militime = function(before) {
+    var date, dateStr, getAsFloat;
+    dateStr = before[0], date = before[1], getAsFloat = before[2];
+    return ['date = ' + dateStr + '<br>' + 'getAsFloat = ' + getAsFloat, Utl.militime(date, getAsFloat)];
+  };
+
+  UtlTest.dateStr = function(before) {
+    var beforeStr, dateSep, ref;
+    ref = before, before = ref[0], dateSep = ref[1];
+    beforeStr = before != null ? 'new Date(' + Utl.militime(before) + ')' : 'undefined';
+    return ['date = ' + beforeStr + '<br>' + 'dateSep = ' + dateSep, Utl.dateStr(before, dateSep)];
+  };
+
+  UtlTest.datetimeStr = function(before) {
     var beforeStr, betweenSep, dateSep, ref, timeSep;
-    ref = before, beforeStr = ref[0], before = ref[1], dateSep = ref[2], timeSep = ref[3], betweenSep = ref[4];
-    return ['date = ' + beforeStr + '<br>' + 'dateSep = ' + dateSep + '<br>timeSep = ' + timeSep + '<br>betweenSep = ' + betweenSep, Utl.getDatetimeStr(before, dateSep, timeSep, betweenSep)];
+    ref = before, before = ref[0], dateSep = ref[1], timeSep = ref[2], betweenSep = ref[3];
+    beforeStr = before != null ? 'new Date(' + Utl.militime(before) + ')' : 'undefined';
+    return ['date = ' + beforeStr + '<br>' + 'dateSep = ' + dateSep + '<br>timeSep = ' + timeSep + '<br>betweenSep = ' + betweenSep, Utl.datetimeStr(before, dateSep, timeSep, betweenSep)];
+  };
+
+  UtlTest.difftime = function(before) {
+    var agoStr, baseDate, baseDateStr, beforeStr, dayStr, hourStr, minStr, monStr, nowSec, nowStr, secStr, targetDate, targetDateStr, yearStr;
+    targetDate = before[0], baseDate = before[1], nowSec = before[2], nowStr = before[3], agoStr = before[4], secStr = before[5], minStr = before[6], hourStr = before[7], dayStr = before[8], monStr = before[9], yearStr = before[10];
+    targetDateStr = targetDate != null ? 'new Date(' + Utl.militime(targetDate) + ')' : 'undefined';
+    baseDateStr = baseDate != null ? 'new Date(' + Utl.militime(baseDate) + ')' : 'undefined';
+    beforeStr = ("targetDate = " + targetDateStr + "\nbaseDate   = " + baseDateStr + "\nnowSec     = " + nowSec + "\nnowStr     = " + nowStr + "\nagoStr     = " + agoStr + "\nsecStr     = " + secStr + "\nminStr     = " + minStr + "\nhourStr    = " + hourStr + "\ndayStr     = " + dayStr + "\nmonStr     = " + monStr + "\nyearStr    = " + yearStr).replace(/ /g, '&nbsp;').replace(/\n/g, '<br>');
+    return [beforeStr, Utl.difftime(targetDate, baseDate, nowSec, nowStr, agoStr, secStr, minStr, hourStr, dayStr, monStr, yearStr)];
   };
 
   UtlTest.inArray = function(ary) {
