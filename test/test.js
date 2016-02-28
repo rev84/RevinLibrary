@@ -2,18 +2,33 @@
 var UtlTest;
 
 window.tests = {
-  Utl: {
-    numFormat: [1000, 500, 1234567890, -123456789],
-    rand: [[1, 10], [1, 100], [5, 30], [-5, 5]],
-    adrBar: ['/=====', 'yeah', 'test.js'],
-    getDateStr: [['null', null], ['new Date(0)', new Date(0)]],
-    getDatetimeStr: [['null', null], ['new Date(0)', new Date(0)]],
-    zerofill: [[1, 5], [100, 4], [100, 10]],
-    time: [null],
-    inArray: [[1, [1, 2, 3, 4, 5]], ['a', [1, 2, 3, 4, 5, 'a']], ['b', [1, 2, 3, 4, 5, 'a']], [1, []], [null, [0, 1, 2, 3]]],
-    clone: [[1, 2, 3, 4, 5]],
-    shuffle: [[1, 2, 3, 4, 5], ['a', 'b', 'c', 'd', 'e'], [1, 1, 1, 2, 3]]
-  }
+  numFormat: [1000, 500, 1234567890, -123456789],
+  rand: [[1, 10], [1, 100], [5, 30], [-5, 5]],
+  adrBar: ['/=====', 'yeah', 'test.js'],
+  getDateStr: [['null', null], ['new Date(0)', new Date(0)], ['new Date(1000000)', new Date(1000000), '/']],
+  getDatetimeStr: [['null', null], ['new Date(0)', new Date(0), '/'], ['new Date(1000000)', new Date(1000000), '', '', '']],
+  zerofill: [[1, 5], [100, 4], [100, 10]],
+  time: [null],
+  militime: [null],
+  inArray: [[1, [1, 2, 3, 4, 5]], ['a', [1, 2, 3, 4, 5, 'a']], ['b', [1, 2, 3, 4, 5, 'a']], [1, []], [null, [0, 1, 2, 3]]],
+  clone: [[1, 2, 3, 4, 5]],
+  shuffle: [[1, 2, 3, 4, 5], ['a', 'b', 'c', 'd', 'e'], [1, 1, 1, 2, 3]],
+  arrayFill: [[3, true], [5, false]],
+  array2dFill: [[3, 4, 1], [5, 10, false], [3, null, 0]],
+  count: [
+    [
+      '{a:"a", b:"b"}', {
+        a: "a",
+        b: "b"
+      }
+    ], [
+      '{a:"a", b:"b", c:"c"}', {
+        a: "a",
+        b: "b",
+        c: "c"
+      }
+    ], ['{}', {}]
+  ]
 };
 
 UtlTest = (function() {
@@ -26,7 +41,7 @@ UtlTest = (function() {
     for (i = j = 0; j < 10; i = ++j) {
       after.push(Utl.rand(min, max));
     }
-    return ['min:' + min + ', max:' + max, after.join(', ')];
+    return ['min = ' + min + '<br>max = ' + max, after.join(', ')];
   };
 
   UtlTest.adrBar = function(before) {
@@ -36,31 +51,31 @@ UtlTest = (function() {
   UtlTest.zerofill = function(before) {
     var digit, num;
     num = before[0], digit = before[1];
-    return ['num:' + num + ', digit:' + digit, Utl.zerofill(num, digit)];
+    return ['num = ' + num + '<br>digit = ' + digit, Utl.zerofill(num, digit)];
   };
 
   UtlTest.repeat = function(before) {
     var str, times;
     str = before[0], times = before[1];
-    return ['str:' + str + ', times:' + times, Utl.repeat(str, times)];
+    return ['str = ' + str + '<br>times = ' + times, Utl.repeat(str, times)];
   };
 
   UtlTest.getDateStr = function(before) {
-    var beforeStr, ref;
-    ref = before, beforeStr = ref[0], before = ref[1];
-    return [beforeStr, Utl.getDateStr(before)];
+    var beforeStr, dateSep, ref;
+    ref = before, beforeStr = ref[0], before = ref[1], dateSep = ref[2];
+    return [beforeStr, Utl.getDateStr(before, dateSep)];
   };
 
   UtlTest.getDatetimeStr = function(before) {
-    var beforeStr, ref;
-    ref = before, beforeStr = ref[0], before = ref[1];
-    return [beforeStr, Utl.getDatetimeStr(before)];
+    var beforeStr, betweenSep, dateSep, ref, timeSep;
+    ref = before, beforeStr = ref[0], before = ref[1], dateSep = ref[2], timeSep = ref[3], betweenSep = ref[4];
+    return ['date = ' + beforeStr + '<br>' + 'dateSep = ' + dateSep + '<br>timeSep = ' + timeSep + '<br>betweenSep = ' + betweenSep, Utl.getDatetimeStr(before, dateSep, timeSep, betweenSep)];
   };
 
   UtlTest.inArray = function(ary) {
     var array, needle;
     needle = ary[0], array = ary[1];
-    return ['needle: ' + needle + ', array:' + '[' + array.toString() + ']', Utl.inArray(needle, array) ? 'true' : 'false'];
+    return ['needle = ' + needle + '<br>array = ' + '[' + array.toString() + ']', Utl.inArray(needle, array) ? 'true' : 'false'];
   };
 
   UtlTest.clone = function(before) {
@@ -71,38 +86,55 @@ UtlTest = (function() {
     return ['[' + before.toString() + ']', '[' + Utl.shuffle(before).toString() + ']'];
   };
 
+  UtlTest.arrayFill = function(before) {
+    var length, value;
+    length = before[0], value = before[1];
+    return ['length = ' + length + '<br>value = ' + value, '[' + Utl.arrayFill(length, value).toString() + ']'];
+  };
+
+  UtlTest.array2dFill = function(before) {
+    var j, len, res, resView, v, value, x, y;
+    x = before[0], y = before[1], value = before[2];
+    res = Utl.array2dFill(x, y, value);
+    resView = "[<br>\n";
+    for (j = 0, len = res.length; j < len; j++) {
+      v = res[j];
+      resView += '&nbsp;&nbsp;&nbsp;[' + v.toString() + "]<br>\n";
+    }
+    resView += "]\n";
+    return ['x:' + x + ', y:' + y + ', value:' + value, resView];
+  };
+
+  UtlTest.count = function(before) {
+    var beforeStr, ref;
+    ref = before, beforeStr = ref[0], before = ref[1];
+    return [beforeStr, Utl.count(before)];
+  };
+
   return UtlTest;
 
 })();
 
 $().ready(function() {
-  var after, before, c, caseDiv, cases, className, funcFullName, funcName, funcs, ref, results;
+  var after, before, c, caseDiv, cases, funcFullName, funcName, j, len, ref, ref1, results;
   ref = window.tests;
   results = [];
-  for (className in ref) {
-    funcs = ref[className];
-    results.push((function() {
-      var j, len, ref1, results1;
-      results1 = [];
-      for (funcName in funcs) {
-        cases = funcs[funcName];
-        funcFullName = className + '.' + funcName;
-        caseDiv = $('<div>').attr('id', funcFullName).append($('<h1>').attr('name', funcFullName).html(funcFullName));
-        $('#index ul').append($('<li>').html('<a href="#' + funcFullName + '">' + funcFullName + '</a>'));
-        for (j = 0, len = cases.length; j < len; j++) {
-          c = cases[j];
-          if (UtlTest[funcName] != null) {
-            ref1 = UtlTest[funcName](c), before = ref1[0], after = ref1[1];
-          } else {
-            before = c;
-            after = Utl[funcName](before);
-          }
-          caseDiv.append($('<div>').addClass('case').append($('<span>').addClass('before').html(before)).append($('<div>').addClass('after').html(after)));
-        }
-        results1.push($('#tests').append(caseDiv));
+  for (funcName in ref) {
+    cases = ref[funcName];
+    funcFullName = 'Utl.' + funcName;
+    caseDiv = $('<div>').attr('id', funcFullName).append($('<h1>').attr('name', funcFullName).html(funcFullName));
+    $('#index ul').append($('<li>').html('<a href="#' + funcFullName + '">' + funcFullName + '</a>'));
+    for (j = 0, len = cases.length; j < len; j++) {
+      c = cases[j];
+      if (UtlTest[funcName] != null) {
+        ref1 = UtlTest[funcName](c), before = ref1[0], after = ref1[1];
+      } else {
+        before = c;
+        after = Utl[funcName](before);
       }
-      return results1;
-    })());
+      caseDiv.append($('<div>').addClass('case').append($('<div>').addClass('before').html(before)).append($('<div>').addClass('after').html(after)));
+    }
+    results.push($('#tests').append(caseDiv));
   }
   return results;
 });

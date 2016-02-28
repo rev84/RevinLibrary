@@ -20,24 +20,43 @@ Utl = (function() {
     return Math.floor(+new Date() / 1000);
   };
 
-  Utl.getDateStr = function(date) {
-    if (date == null) {
-      date = null;
+  Utl.militime = function(getAsFloat) {
+    if (getAsFloat == null) {
+      getAsFloat = false;
     }
-    if (date === null) {
-      date = new Date();
-    }
-    return '' + this.zerofill(date.getFullYear(), 4) + '/' + this.zerofill(date.getMonth() + 1, 2) + '/' + this.zerofill(date.getDate(), 2);
+    return +new Date() / (getAsFloat ? 1000 : 1);
   };
 
-  Utl.getDatetimeStr = function(date) {
+  Utl.getDateStr = function(date, dateSep) {
     if (date == null) {
       date = null;
+    }
+    if (dateSep == null) {
+      dateSep = '-';
     }
     if (date === null) {
       date = new Date();
     }
-    return this.getDateStr(date) + ' ' + this.zerofill(date.getHours(), 2) + ':' + this.zerofill(date.getMinutes(), 2) + ':' + this.zerofill(date.getSeconds(), 2);
+    return '' + this.zerofill(date.getFullYear(), 4) + dateSep + this.zerofill(date.getMonth() + 1, 2) + dateSep + this.zerofill(date.getDate(), 2);
+  };
+
+  Utl.getDatetimeStr = function(date, dateSep, timeSep, betweenSep) {
+    if (date == null) {
+      date = null;
+    }
+    if (dateSep == null) {
+      dateSep = '-';
+    }
+    if (timeSep == null) {
+      timeSep = ':';
+    }
+    if (betweenSep == null) {
+      betweenSep = ' ';
+    }
+    if (date === null) {
+      date = new Date();
+    }
+    return this.getDateStr(date, dateSep) + betweenSep + this.zerofill(date.getHours(), 2) + timeSep + this.zerofill(date.getMinutes(), 2) + timeSep + this.zerofill(date.getSeconds(), 2);
   };
 
   Utl.zerofill = function(num, digit) {
@@ -78,6 +97,44 @@ Utl = (function() {
       res[k] = v;
     }
     return res;
+  };
+
+  Utl.arrayFill = function(length, val) {
+    var i, j, ref, res;
+    if (val == null) {
+      val = null;
+    }
+    res = [];
+    for (i = j = 0, ref = length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+      res[i] = val;
+    }
+    return res;
+  };
+
+  Utl.array2dFill = function(x, y, val) {
+    var j, l, ref, ref1, res, xx, yAry, yy;
+    if (y == null) {
+      y = null;
+    }
+    if (val == null) {
+      val = null;
+    }
+    if (y === null) {
+      y = x;
+    }
+    res = [];
+    yAry = [];
+    for (yy = j = 0, ref = y; 0 <= ref ? j < ref : j > ref; yy = 0 <= ref ? ++j : --j) {
+      yAry[yy] = val;
+    }
+    for (xx = l = 0, ref1 = x; 0 <= ref1 ? l < ref1 : l > ref1; xx = 0 <= ref1 ? ++l : --l) {
+      res[xx] = this.clone(yAry);
+    }
+    return res;
+  };
+
+  Utl.count = function(object) {
+    return Object.keys(object).length;
   };
 
   return Utl;
