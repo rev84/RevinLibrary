@@ -12,6 +12,13 @@ window.tests =
     ['new Date(0)', new Date(0), '/']
     ['new Date(1000000)', new Date(1000000), '', '', '']
   ]
+  normalize:[
+    [0.3]
+    [6.2]
+    [Math.sin(Math.PI), -Math.PI, Math.PI]
+    [-Math.random(), Math.random()/2, 0.5+Math.random()/2]
+    [3489, 0, 100]
+  ]
   zerofill:[
     [1, 5]
     [100, 4]
@@ -52,6 +59,7 @@ window.tests =
     ['{a:"a", b:"b", c:"c"}', {a:"a", b:"b", c:"c"}]
     ['{}', {}]
   ]
+  uuid:[null]
 
 class UtlTest
   @rand:(before)->
@@ -62,6 +70,9 @@ class UtlTest
     ['min = '+min+'<br>max = '+max, after.join(', ')]
   @adrBar:(before)->
     [before, '<button onclick="Utl.adrBar(\''+before+'\')">変更</button>'+'<button onclick="Utl.adrBar(\'/RevinLibrary/test/\')">戻す</button>']
+  @normalize:(before)->
+    [num, min, max] = before
+    ['num = '+num+'<br>min = '+min+'<br>max = '+max, Utl.normalize(num, min, max)]
   @zerofill:(before)->
     [num, digit] = before
     ['num = '+num+'<br>digit = '+digit, Utl.zerofill(num, digit)]
@@ -92,10 +103,15 @@ class UtlTest
     resView = "[<br>\n"
     resView += '&nbsp;&nbsp;&nbsp;['+v.toString()+"]<br>\n" for v in res
     resView += "]\n"
-    ['x:'+x+', y:'+y+', value:'+value, resView]
+    ['x = '+x+'<br>y = '+y+'<br>value = '+value, resView]
   @count:(before)->
     [beforeStr, before] = before
     [beforeStr, Utl.count before]
+  @uuid:(before)->
+    after = []
+    for i in [0...10]
+      after.push Utl.uuid()
+    ['', after.join('<br>')]
 
 
 $().ready ->

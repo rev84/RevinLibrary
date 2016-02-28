@@ -7,6 +7,7 @@ window.tests = {
   adrBar: ['/=====', 'yeah', 'test.js'],
   getDateStr: [['null', null], ['new Date(0)', new Date(0)], ['new Date(1000000)', new Date(1000000), '/']],
   getDatetimeStr: [['null', null], ['new Date(0)', new Date(0), '/'], ['new Date(1000000)', new Date(1000000), '', '', '']],
+  normalize: [[0.3], [6.2], [Math.sin(Math.PI), -Math.PI, Math.PI], [-Math.random(), Math.random() / 2, 0.5 + Math.random() / 2], [3489, 0, 100]],
   zerofill: [[1, 5], [100, 4], [100, 10]],
   time: [null],
   militime: [null],
@@ -28,7 +29,8 @@ window.tests = {
         c: "c"
       }
     ], ['{}', {}]
-  ]
+  ],
+  uuid: [null]
 };
 
 UtlTest = (function() {
@@ -46,6 +48,12 @@ UtlTest = (function() {
 
   UtlTest.adrBar = function(before) {
     return [before, '<button onclick="Utl.adrBar(\'' + before + '\')">変更</button>' + '<button onclick="Utl.adrBar(\'/RevinLibrary/test/\')">戻す</button>'];
+  };
+
+  UtlTest.normalize = function(before) {
+    var max, min, num;
+    num = before[0], min = before[1], max = before[2];
+    return ['num = ' + num + '<br>min = ' + min + '<br>max = ' + max, Utl.normalize(num, min, max)];
   };
 
   UtlTest.zerofill = function(before) {
@@ -102,13 +110,22 @@ UtlTest = (function() {
       resView += '&nbsp;&nbsp;&nbsp;[' + v.toString() + "]<br>\n";
     }
     resView += "]\n";
-    return ['x:' + x + ', y:' + y + ', value:' + value, resView];
+    return ['x = ' + x + '<br>y = ' + y + '<br>value = ' + value, resView];
   };
 
   UtlTest.count = function(before) {
     var beforeStr, ref;
     ref = before, beforeStr = ref[0], before = ref[1];
     return [beforeStr, Utl.count(before)];
+  };
+
+  UtlTest.uuid = function(before) {
+    var after, i, j;
+    after = [];
+    for (i = j = 0; j < 10; i = ++j) {
+      after.push(Utl.uuid());
+    }
+    return ['', after.join('<br>')];
   };
 
   return UtlTest;

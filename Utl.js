@@ -16,6 +16,23 @@ Utl = (function() {
     return window.history.replaceState('', '', '' + url);
   };
 
+  Utl.normalize = function(num, min, max) {
+    var range;
+    if (min == null) {
+      min = 0;
+    }
+    if (max == null) {
+      max = 1;
+    }
+    range = Math.abs(max - min);
+    if (num < min) {
+      num += range * Math.ceil(Math.abs(num - min) / range);
+    } else if (max <= num) {
+      num -= range * (Math.floor(Math.abs(num - max) / range) + 1);
+    }
+    return num;
+  };
+
   Utl.time = function() {
     return Math.floor(+new Date() / 1000);
   };
@@ -135,6 +152,19 @@ Utl = (function() {
 
   Utl.count = function(object) {
     return Object.keys(object).length;
+  };
+
+  Utl.uuid = function() {
+    var i, j, random, uuid;
+    uuid = '';
+    for (i = j = 0; j < 32; i = ++j) {
+      random = Math.random() * 16 | 0;
+      if (i === 8 || i === 12 || i === 16 || i === 20) {
+        uuid += '-';
+      }
+      uuid += (i === 12 ? 4 : (i === 16 ? random & 3 | 8 : random)).toString(16);
+    }
+    return uuid;
   };
 
   return Utl;

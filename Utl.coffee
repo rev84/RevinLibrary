@@ -34,6 +34,24 @@ class Utl
 
   ############################################
   # 
+  # 数値を min <= num < max の範囲で正規化する
+  # @param Number num
+  # @param Number min
+  # @param Number max
+  # @return String 
+  # 
+  ############################################
+  @normalize:(num, min = 0, max = 1)->
+    range = Math.abs(max - min)
+    if num < min
+      num += range * Math.ceil(Math.abs(num - min) / range)
+    else if max <= num
+      num -= range * (Math.floor(Math.abs(num - max) / range)+1)
+    num
+
+
+  ############################################
+  # 
   # 現在秒を取得
   # @return int
   # 
@@ -191,3 +209,18 @@ class Utl
   ############################################
   @count:(object)->
     Object.keys(object).length
+
+
+  ############################################
+  # 
+  # uuid を生成
+  # @return String
+  # 
+  ############################################
+  @uuid:()->
+    uuid = ''
+    for i in [0...32]
+      random = Math.random() * 16 | 0;
+      uuid += '-' if i in [8, 12, 16, 20]
+      uuid += (if i is 12 then 4 else (if i is 16 then random & 3 | 8 else random)).toString(16);
+    uuid
