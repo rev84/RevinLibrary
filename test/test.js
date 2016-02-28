@@ -30,7 +30,7 @@ UtlTest = (function() {
   };
 
   UtlTest.adrBar = function(before) {
-    return [before, '<button onclick="Utl.adrBar(\'' + before + '\')">変更</button>' + '<button onclick="Utl.adrBar(\'RevinLibrary/test/\')">戻す</button>'];
+    return [before, '<button onclick="Utl.adrBar(\'' + before + '\')">変更</button>' + '<button onclick="Utl.adrBar(\'/RevinLibrary/test/\')">戻す</button>'];
   };
 
   UtlTest.zerofill = function(before) {
