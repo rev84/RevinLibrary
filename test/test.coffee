@@ -5,12 +5,12 @@ window.tests =
   getDateStr:[
     ['null', null]
     ['new Date(0)', new Date(0)]
-    ['new Date(1000000)', new Date(1000000), '/']
+    ['new Date(1000000000000)', new Date(1000000000000), '/']
   ]
   getDatetimeStr:[
     ['null', null]
     ['new Date(0)', new Date(0), '/']
-    ['new Date(1000000)', new Date(1000000), '', '', '']
+    ['new Date(1000000000000)', new Date(1000000000000), '', '', '']
   ]
   normalize:[
     [0.3]
