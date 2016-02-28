@@ -43,7 +43,7 @@ class UtlTest
       after.push(Utl.rand min, max)
     ['min:'+min+', max:'+max, after.join(', ')]
   @adrBar:(before)->
-    [before, '<button onclick="Utl.adrBar(\''+before+'\')">変更</button>'+'<button onclick="Utl.adrBar(\'./\')">戻す</button>']
+    [before, '<button onclick="Utl.adrBar(\''+before+'\')">変更</button>'+'<button onclick="Utl.adrBar(\'RevinLibrary/test/\')">戻す</button>']
   @zerofill:(before)->
     [num, digit] = before
     ['num:'+num+', digit:'+digit, Utl.zerofill(num, digit)]
