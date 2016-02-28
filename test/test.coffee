@@ -82,7 +82,7 @@ class UtlTest
 
   @getDateStr:(before)->
     [beforeStr, before, dateSep] = before
-    [beforeStr, Utl.getDateStr(before, dateSep)]
+    ['date = '+beforeStr+'<br>'+'dateSep = '+dateSep, Utl.getDateStr(before, dateSep)]
   @getDatetimeStr:(before)->
     [beforeStr, before, dateSep, timeSep, betweenSep] = before
     ['date = '+beforeStr+'<br>'+'dateSep = '+dateSep+'<br>timeSep = '+timeSep+'<br>betweenSep = '+betweenSep, Utl.getDatetimeStr(before, dateSep, timeSep, betweenSep)]

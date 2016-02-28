@@ -71,7 +71,7 @@ UtlTest = (function() {
   UtlTest.getDateStr = function(before) {
     var beforeStr, dateSep, ref;
     ref = before, beforeStr = ref[0], before = ref[1], dateSep = ref[2];
-    return [beforeStr, Utl.getDateStr(before, dateSep)];
+    return ['date = ' + beforeStr + '<br>' + 'dateSep = ' + dateSep, Utl.getDateStr(before, dateSep)];
   };
 
   UtlTest.getDatetimeStr = function(before) {
