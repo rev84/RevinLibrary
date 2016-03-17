@@ -192,14 +192,13 @@ Utl = (function() {
     return false;
   };
 
-  Utl.clone = function(ary) {
-    var j, k, len, res, v;
-    res = [];
-    for (k = j = 0, len = ary.length; j < len; k = ++j) {
-      v = ary[k];
-      res[k] = v;
+  Utl.clone = function(obj) {
+    if ($.isArray(obj)) {
+      $.extend(true, [], obj);
+    } else if (obj instanceof Object) {
+      $.extend(true, {}, obj);
     }
-    return res;
+    return obj;
   };
 
   Utl.arrayFill = function(length, val) {
@@ -209,13 +208,13 @@ Utl = (function() {
     }
     res = [];
     for (i = j = 0, ref = length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-      res[i] = val;
+      res[i] = this.clone(val);
     }
     return res;
   };
 
   Utl.array2dFill = function(x, y, val) {
-    var j, l, ref, ref1, res, xx, yAry, yy;
+    var j, k, ref, ref1, res, xx, yAry, yy;
     if (y == null) {
       y = null;
     }
@@ -228,9 +227,9 @@ Utl = (function() {
     res = [];
     yAry = [];
     for (yy = j = 0, ref = y; 0 <= ref ? j < ref : j > ref; yy = 0 <= ref ? ++j : --j) {
-      yAry[yy] = val;
+      yAry[yy] = this.clone(val);
     }
-    for (xx = l = 0, ref1 = x; 0 <= ref1 ? l < ref1 : l > ref1; xx = 0 <= ref1 ? ++l : --l) {
+    for (xx = k = 0, ref1 = x; 0 <= ref1 ? k < ref1 : k > ref1; xx = 0 <= ref1 ? ++k : --k) {
       res[xx] = this.clone(yAry);
     }
     return res;
@@ -240,7 +239,7 @@ Utl = (function() {
     return Object.keys(object).length;
   };
 
-  Utl.uuid = function() {
+  Utl.uuid4 = function() {
     var i, j, random, uuid;
     uuid = '';
     for (i = j = 0; j < 32; i = ++j) {

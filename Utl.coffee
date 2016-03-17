@@ -234,11 +234,12 @@ class Utl
   # @return Array
   # 
   ############################################
-  @clone:(ary)->
-    res = []
-    for v, k in ary
-      res[k] = v
-    res
+  @clone:(obj)->
+    if $.isArray obj
+      $.extend true, [], obj
+    else if obj instanceof Object
+      $.extend true, {}, obj
+    obj
 
 
   ############################################
@@ -253,7 +254,7 @@ class Utl
   @arrayFill:(length, val = null)->
     res = []
     for i in [0...length]
-      res[i] = val
+      res[i] = @clone val
     res
 
 
@@ -272,7 +273,7 @@ class Utl
     res = []
     yAry = []
     for yy in [0...y]
-      yAry[yy] = val
+      yAry[yy] = @clone val
     for xx in [0...x]
       res[xx] = @clone yAry
     res
@@ -297,7 +298,7 @@ class Utl
   # @return String
   # 
   ############################################
-  @uuid:()->
+  @uuid4:()->
     uuid = ''
     for i in [0...32]
       random = Math.random() * 16 | 0;
