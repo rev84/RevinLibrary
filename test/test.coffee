@@ -78,7 +78,7 @@ window.tests =
     ['{a:"a", b:"b", c:"c"}', {a:"a", b:"b", c:"c"}]
     ['{}', {}]
   ]
-  uuid:[null]
+  uuid4:[null]
 
 class UtlTest
   @rand:(before)->
@@ -151,10 +151,10 @@ class UtlTest
   @count:(before)->
     [beforeStr, before] = before
     [beforeStr, Utl.count before]
-  @uuid:(before)->
+  @uuid4:(before)->
     after = []
     for i in [0...10]
-      after.push Utl.uuid()
+      after.push Utl.uuid4()
     ['', after.join('<br>')]
 
 

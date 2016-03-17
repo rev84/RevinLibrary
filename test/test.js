@@ -31,7 +31,7 @@ window.tests = {
       }
     ], ['{}', {}]
   ],
-  uuid: [null]
+  uuid4: [null]
 };
 
 UtlTest = (function() {
@@ -143,11 +143,11 @@ UtlTest = (function() {
     return [beforeStr, Utl.count(before)];
   };
 
-  UtlTest.uuid = function(before) {
+  UtlTest.uuid4 = function(before) {
     var after, i, j;
     after = [];
     for (i = j = 0; j < 10; i = ++j) {
-      after.push(Utl.uuid());
+      after.push(Utl.uuid4());
     }
     return ['', after.join('<br>')];
   };
