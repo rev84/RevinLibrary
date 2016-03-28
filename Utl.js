@@ -252,6 +252,33 @@ Utl = (function() {
     return uuid;
   };
 
+  Utl.delLs = function(key) {
+    return localStorage.removeItem(key);
+  };
+
+  Utl.setLs = function(key, value) {
+    var json;
+    if (value == null) {
+      value = null;
+    }
+    if (value === null) {
+      return this.delLs(key);
+    }
+    json = JSON.stringify(value);
+    return localStorage.setItem(key, json);
+  };
+
+  Utl.getLs = function(key) {
+    var error, res;
+    res = localStorage.getItem(key);
+    try {
+      res = JSON.parse(res);
+    } catch (error) {
+      res = null;
+    }
+    return res;
+  };
+
   return Utl;
 
 })();

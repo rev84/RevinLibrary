@@ -305,3 +305,47 @@ class Utl
       uuid += '-' if i in [8, 12, 16, 20]
       uuid += (if i is 12 then 4 else (if i is 16 then random & 3 | 8 else random)).toString(16);
     uuid
+
+  ############################################
+  # 
+  # ローカルストレージの値を削除
+  # 
+  # @param String key
+  # @param mixed value
+  # @return undefined
+  # 
+  ############################################
+  @delLs:(key)->
+    localStorage.removeItem key
+
+  ############################################
+  # 
+  # ローカルストレージに値を設定
+  # 
+  # @param String key
+  # @param mixed value
+  # @return undefined
+  # 
+  ############################################
+  @setLs:(key, value = null)->
+    # null は削除
+    return @delLs key if value is null
+
+    json = JSON.stringify value
+    localStorage.setItem key, json
+
+  ############################################
+  # 
+  # ローカルストレージから値を取得
+  # 
+  # @param String key
+  # @return undefined
+  # 
+  ############################################
+  @getLs:(key)->
+    res = localStorage.getItem key
+    try
+      res = JSON.parse res
+    catch
+      res = null
+    res
