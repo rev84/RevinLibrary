@@ -12,8 +12,46 @@ Utl = (function() {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
+  Utl.genPassword = function(length) {
+    var chars, i, j, ref, res;
+    if (length == null) {
+      length = 4;
+    }
+    chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    res = '';
+    for (i = j = 0, ref = length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+      res += chars.substr(this.rand(0, chars.length - 1), 1);
+    }
+    return res;
+  };
+
   Utl.adrBar = function(url) {
     return window.history.replaceState('', '', '' + url);
+  };
+
+  Utl.getQuery = function(key, defaultValue) {
+    var j, k, len, p, params, query, ref, res, v;
+    if (key == null) {
+      key = null;
+    }
+    if (defaultValue == null) {
+      defaultValue = null;
+    }
+    query = document.location.search.substring(1);
+    params = query.split('&');
+    res = {};
+    for (j = 0, len = params.length; j < len; j++) {
+      p = params[j];
+      ref = p.split('='), k = ref[0], v = ref[1];
+      res[k] = v;
+    }
+    if (key === null) {
+      return res;
+    }
+    if (res[key] != null) {
+      return res[key];
+    }
+    return defaultValue;
   };
 
   Utl.normalize = function(num, min, max) {
@@ -214,7 +252,7 @@ Utl = (function() {
   };
 
   Utl.array2dFill = function(x, y, val) {
-    var j, k, ref, ref1, res, xx, yAry, yy;
+    var j, l, ref, ref1, res, xx, yAry, yy;
     if (y == null) {
       y = null;
     }
@@ -229,7 +267,7 @@ Utl = (function() {
     for (yy = j = 0, ref = y; 0 <= ref ? j < ref : j > ref; yy = 0 <= ref ? ++j : --j) {
       yAry[yy] = this.clone(val);
     }
-    for (xx = k = 0, ref1 = x; 0 <= ref1 ? k < ref1 : k > ref1; xx = 0 <= ref1 ? ++k : --k) {
+    for (xx = l = 0, ref1 = x; 0 <= ref1 ? l < ref1 : l > ref1; xx = 0 <= ref1 ? ++l : --l) {
       res[xx] = this.clone(yAry);
     }
     return res;
